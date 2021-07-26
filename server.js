@@ -1,19 +1,22 @@
 const express = require('express');
-const evalCalculator = require('./services/evalCalculator')
+const route = require('./routes');
+const evalCalculatorService = require('./services/evalCalculatorService');
+const middlewares = require('./middlewares');
 
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-app.get('/', async (req, res) => {
-  res.status(200).send("Xabalau")
-})
+app
+  .use('/user', route.userRoute)
+  .use('/login', route.loginRoute)
+  .use(middlewares.errorMiddleware);
 
 app.post('/', async (req, res) => {
   const {value} = req.body;
   console.log("Value = " + value)
-  result = await evalCalculator(value)
+  result = await evalCalculatorService(value)
   res.status(200).json(result)
 })
 
